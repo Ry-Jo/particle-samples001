@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>Particle Engine (Three.js)</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	
+</head>
+<body>
+
+<script src="js/Three.js"></script>
+<script src="js/Detector.js"></script>
+<script src="js/Stats.js"></script>
+<script src="js/OrbitControls.js"></script>
+
+
+<script src="js/ParticleEngine.js"></script>
+<script src="js/ParticleEngineExamples.js"></script>
+
+
+<!-- ------------------------------------------------------------ -->
+
+<div id="ThreeJS" style="position: absolute; left:0px; top:0px"></div>
+<script>
+/*
+	Three.js "tutorials by example"
+	Author: Lee Stemkoski
+	Date: July 2013 (three.js v59dev)
+*/
+
+// MAIN
+
+// standard global variables
+var container, scene, camera, renderer, controls, stats;
+
+var clock = new THREE.Clock();
+// custom global variables
+
+
+init();
+animate();
+
+// FUNCTIONS 		
+function init() 
+{
+	// SCENE
+	scene = new THREE.Scene();
+	// CAMERA
+	var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
+	var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 2, FAR = 5000;
+	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+	scene.add(camera);
+	camera.position.set(0,200,400);
+	camera.lookAt(scene.position);	
+	// RENDERER
+	
+		renderer = new THREE.WebGLRenderer( {antialias:true} );
+
+	renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	container = document.getElementById( 'ThreeJS' );
+	container.appendChild( renderer.domElement );
+	
+	// CONTROLS
+	controls = new THREE.OrbitControls( camera, renderer.domElement );
+	// STATS
+	stats = new Stats();
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.bottom = '0px';
+	stats.domElement.style.zIndex = 100;
+	container.appendChild( stats.domElement );
+	// LIGHT
+	var light = new THREE.PointLight(0xffffff);
+	light.position.set(0,250,0);
+	scene.add(light);
+	// FLOOR
+	
+	////////////
+	// CUSTOM //
+	////////////
+
+
+	this.engine = new ParticleEngine();
+	engine.setValues( Examples.smoke );
+	engine.initialize();
+}	
+	// GUI for experimenting with parameters
+
+function animate() 
+{
+    requestAnimationFrame( animate );
+	render();		
+	update();
+}
+
+
+
+function update()
+{
+/*
+	if ( keyboard.pressed("1") ) 
+		restartEngine( fountain );
+	if ( keyboard.pressed("2") ) 
+		restartEngine( startunnel );
+	if ( keyboard.pressed("3") ) 
+		restartEngine( starfield );
+	if ( keyboard.pressed("4") ) 
+		restartEngine( fireflies );
+		
+	if ( keyboard.pressed("5") ) 
+		restartEngine( clouds );
+	if ( keyboard.pressed("6") ) 
+		restartEngine( smoke );
+		
+	if ( keyboard.pressed("7") ) 
+		restartEngine( fireball );
+	if ( keyboard.pressed("8") ) 
+		restartEngine( Examples.candle );
+		
+	if ( keyboard.pressed("9") ) 
+		restartEngine( rain );
+	if ( keyboard.pressed("0") ) 
+		restartEngine( snow );
+		
+	if ( keyboard.pressed("q") ) 
+		restartEngine( firework );
+	// also: reset camera angle
+*/
+	
+	controls.update();
+	stats.update();
+	
+	var dt = clock.getDelta();
+	engine.update( dt * 0.5 );	
+}
+
+function render() 
+{
+	renderer.render( scene, camera );
+}
+
+</script>
+
+</body>
+</html>
